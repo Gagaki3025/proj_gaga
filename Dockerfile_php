@@ -1,0 +1,47 @@
+FROM php:8.2-fpm
+
+WORKDIR /home/gaga/proj_gaga
+
+RUN     apt-get update && apt-get install -y \
+	build-essential locales zip \
+	jpegoptim optipng pngquant gifsicle \
+	vim unzip git curl btop mc nano less \
+	libpq-dev libonig-dev libzip-dev \
+#RUN add-apt-repository ppa:ondrej/php
+#RUN apt update
+#RUN apt-get install php8.2 -y \
+#        && apt-get install -y php8.2-cli php8.2-common php8.2-fpm php8.2-mysql php8.2-zip \
+#        php8.2-gd php8.2-mbstr \
+#RUN apt install php
+#RUN apt-get install libapache2-mod-php php-mysql
+#RUN apt-get install php-pear
+	libfreetype-dev \
+	libjpeg62-turbo-dev \
+	libpng-dev \
+	&& docker-php-ext-configure gd --with-freetype --with-jpeg \
+	&& docker-php-ext-install pdo_mysql mbstring zip exif pcntl gd
+
+# !!! https://www.php.net/manual/en/install.pecl.pear.php
+#RUN pecl install redis-5.3.7 \
+#	&& pecl install xdebug-3.2.1 \
+#	&& docker-php-ext-enable redis xdebug
+
+# RUN apt-get install -y libmemcached-dev libssl-dev zlib1g-dev 
+#	&& pecl install memcached-3.2.0 \
+#	&& docker-php-ext-enable memcached
+
+#RUN docker-php-source extract \
+	# do important things \
+#	&& docker-php-source delete
+
+RUN groupadd -g 1000 www 
+RUN useradd -u 1000 -ms /bin/bash -g www www 
+# Копируем содержимое текущего каталога в рабочую директорию
+COPY . /var/www
+COPY --chown=www:www . /var/www
+# Меняем пользователя на www
+USER www 
+
+# В контейнере открываем 9000 порт и запускаем сервер php-fpm
+EXPOSE 9000
+CMD ["php-fpm"]

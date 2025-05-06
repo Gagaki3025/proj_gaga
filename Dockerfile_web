@@ -1,0 +1,15 @@
+FROM ubuntu/apache2
+# :2.4-22.04_beta
+
+WORKDIR /home/gaga/proj_gaga
+
+RUN mkdir -p /var/lib/apt/lists/partial
+
+RUN apt-get update
+
+RUN apt-get install nano
+RUN apt-get install less 
+RUN apt-get install btop 
+# RUN apt-get install mc
+
+# RUN apt-get install -y libmemcached-dev libssl-dev zlib1g-dev 

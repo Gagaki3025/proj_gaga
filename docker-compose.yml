@@ -1,0 +1,40 @@
+version: '3.3'
+services:
+
+  webapache2:
+    build:
+      context: .
+      dockerfile: Dockerfile_web
+    image: ubuntu/apache2
+#:2.4-22.04_beta
+    container_name: webapache2
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "80:80"
+      - "443:443"
+    working_dir: /var/www
+    volumes:
+      - /home/gaga/proj_gaga:/var/www
+    networks:
+      - network2
+
+  # PHP Service
+  php2:
+    build:
+      context: .
+      dockerfile: Dockerfile_php
+    image: php:8.2-fpm
+    container_name: php2
+    restart: unless-stopped
+    tty: true
+    working_dir: /var/www
+    volumes:
+      - /home/gaga/gaga_proj/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - network2
+
+# Docker Networks
+networks:
+  network2:
+    driver: bridge
